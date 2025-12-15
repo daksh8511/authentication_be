@@ -1,0 +1,49 @@
+import express from 'express'
+import UserModel from '../models/UserModel.js';
+import jwt from 'jsonwebtoken'
+import Protect from '../middleware/Auth.js';
+
+const routes = express.Router()
+
+routes.post('/register', async (req, res) => {
+    const {name, email, password} = req.body;
+
+    if(!email || !password || !name) return res.status(401).json({message : 'Fields are requierd'})
+
+    try {
+        const IsExist = await UserModel.findOne({email})
+
+        if(IsExist){
+            return res.status(401).json({message : 'User already exist'})
+        }
+        
+        const NewUser = await UserModel.create({name, email, password})
+
+        const token = GenerateToken(NewUser._id)
+
+        await NewUser.save()
+        
+        return res.status(200).json({message : 'User register successfully', name, email, password, token : token})
+
+    } catch (error) {
+        return res.status(500).json({message : 'Server side error'})      
+    }
+})
+
+routes.post('/login', async (req, res) => {
+    const {email,password} = req.body;
+    
+    if(!email || !password) return res.status(401).json({message : 'Fields are requierd'})
+
+    try {
+
+    } catch (error) {
+        return res.status(500).json({message : 'Server side error'})
+    }
+})
+
+const GenerateToken = (id) => {
+    return jwt.sign({id}, process.env.JWT_TOKEN, {expiresIn : '30d'})
+}
+
+export default routes
