@@ -54,6 +54,16 @@ routes.post('/login', async (req, res) => {
     }
 })
 
+routes.get('/get_user', async (req,res) => {
+    const {_id} = req.body
+    try {
+        const findUser = await UserModel.findById({_id})
+        return res.status(200).json({message : 'User details', user_details : findUser})
+    } catch (error) {
+        return res.status(500).json({message: 'Server side error'})
+    }
+})
+
 const GenerateToken = (id) => {
     return jwt.sign({id}, process.env.JWT_TOKEN, {expiresIn : '30d'})
 }
