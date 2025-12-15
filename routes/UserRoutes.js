@@ -36,7 +36,19 @@ routes.post('/login', async (req, res) => {
     if(!email || !password) return res.status(401).json({message : 'Fields are requierd'})
 
     try {
+        const User = await UserModel.findOne({email});
 
+        if(!User){
+            return res.status(401).json({message : 'User are not registered! please sign up'})
+        }
+
+        const isPasswordMatch = await User.matchPassword(password)
+
+        if(!isPasswordMatch){
+            return res.status(401).json({message : 'Password are not matched. Please try again'})
+        }
+
+        return res.status(200).json({message : 'Login success', email, password})
     } catch (error) {
         return res.status(500).json({message : 'Server side error'})
     }
