@@ -48,7 +48,7 @@ routes.post('/login', async (req, res) => {
             return res.status(401).json({message : 'Password are not matched. Please try again'})
         }
 
-        return res.status(200).json({message : 'Login success', email, password})
+        return res.status(200).json({message : 'Login success', user : User})
     } catch (error) {
         return res.status(500).json({message : 'Server side error'})
     }
