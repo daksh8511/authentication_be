@@ -21,6 +21,8 @@ routes.post('/register', async (req, res) => {
 
         const token = GenerateToken(NewUser._id)
 
+        localStorage.setItem('token', token)
+
         await NewUser.save()
         
         return res.status(200).json({message : 'User register successfully', name, email, password, token : token})
